@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifier Auth</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f8; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+    .auth-box { background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:100%; max-width:380px; }
+    h2 { text-align:center; margin-bottom:20px; }
+    input { width:100%; padding:12px; margin:8px 0; border-radius:6px; border:1px solid #ccc; }
+    button { width:100%; padding:12px; margin-top:10px; background:#27ae60; color:white; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
+    button:hover { background:#219150; }
+    .google-btn { background:#db4437; margin-top:10px; }
+    .toggle-link { display:block; text-align:center; margin-top:15px; color:#0077cc; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="auth-box">
+  <!-- LOGIN form -->
+  <div id="loginForm">
+    <h2>Verifier Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button id="loginBtn">Login</button>
+    <button id="googleLogin" class="google-btn">Login with Google</button>
+    <p class="toggle-link" onclick="showSignup()">Don’t have an account? Sign up</p>
+  </div>
+
+  <!-- SIGNUP form -->
+  <div id="signupForm" style="display:none;">
+    <h2>Verifier Sign Up</h2>
+    <input type="text" id="signupFullName" placeholder="Full Name" required>
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+    <button id="signupBtn">Sign Up</button>
+    <button id="googleSignup" class="google-btn">Sign Up with Google</button>
+    <p class="toggle-link" onclick="showLogin()">Already have an account? Login</p>
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from './auth-connector.js';
+
+function showSignup() { document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; }
+function showLogin() { document.getElementById('signupForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
+
+// LOGIN
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  if(!email || !password){ alert('All fields are required.'); return; }
+
+  try {
+    const user = await supabase.auth.signInWithPassword({ email, password });
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.data.user.id)
+      .single();
+
+    if(profileErr || !profile) throw new Error('Profile not found');
+    if(profile.role !== 'verifier') throw new Error('Access denied: Not a verifier');
+
+    window.location.href = 'verifier-dashboard.html';
+  } catch(err) { alert(err.message); }
+});
+
+// SIGNUP
+document.getElementById('signupBtn').addEventListener('click', async () => {
+  const fullName = document.getElementById('signupFullName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value.trim();
+  if(!fullName || !email || !password){ alert('All fields are required.'); return; }
+
+  try {
+    const { data: user, error } = await supabase.auth.signUp({ email, password });
+    if(error) throw error;
+
+    await supabase.from('profiles').insert([{ id: user.user.id, full_name: fullName, role: 'verifier' }]);
+    alert('Signup successful! Please confirm your email.');
+    showLogin();
+  } catch(err){ alert(err.message); }
+});
+
+// GOOGLE LOGIN & SIGNUP
+document.getElementById('googleLogin').addEventListener('click',()=>supabase.auth.signInWithOAuth({ provider:'google', options:{redirectTo:window.location.origin+'/auth-callback.html'} }));
+document.getElementById('googleSignup').addEventListener('click',()=>supabase.auth.signInWithOAuth({ provider:'google', options:{redirectTo:window.location.origin+'/auth-callback.html'} }));
+</script>
+
+</body>
+</html>
