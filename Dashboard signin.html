@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f6f8; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+  .container { background:white; padding:30px; border-radius:10px; width:90%; max-width:400px; box-shadow:0 0 15px rgba(0,0,0,0.2); text-align:center; }
+  h2 { margin-bottom:20px; color:#2c3e50; }
+  input { width:100%; padding:12px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+  button { width:100%; padding:12px; background:#3498db; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; margin-top:10px; }
+  button:hover { background:#2980b9; }
+  .error { color:red; margin-top:10px; }
+  .toggle-btn { background:#2c3e50; margin-top:5px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="formTitle">Admin Sign In</h2>
+
+  <!-- Sign In Form -->
+  <div id="signInForm">
+    <input type="email" id="signInEmail" placeholder="Enter admin email" required>
+    <input type="password" id="signInPassword" placeholder="Enter password" required>
+    <button id="signInBtn">Sign In</button>
+    <div class="error" id="signInError"></div>
+    <button class="toggle-btn" id="showSignUp">Don't have an account? Sign Up</button>
+  </div>
+
+  <!-- Sign Up Form -->
+  <div id="signUpForm" style="display:none;">
+    <input type="email" id="signUpEmail" placeholder="Enter admin email" required>
+    <input type="password" id="signUpPassword" placeholder="Enter password" required>
+    <input type="password" id="signUpConfirm" placeholder="Confirm password" required>
+    <button id="signUpBtn">Sign Up</button>
+    <div class="error" id="signUpError"></div>
+    <button class="toggle-btn" id="showSignIn">Already have an account? Sign In</button>
+  </div>
+
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+// --- Supabase setup ---
+const supabaseUrl = 'https://nfixpojxelyrdxxqqvpb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5maXhwb2p4ZWx5cmR4eHFxdnBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MjI0ODYsImV4cCI6MjA3NDI5ODQ4Nn0.X6GmWOzL6NBtKKBejHjf6xQuEBeiA40EOEs4uQt7Vxw';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// --- DOM elements ---
+const signInForm = document.getElementById('signInForm');
+const signUpForm = document.getElementById('signUpForm');
+const formTitle = document.getElementById('formTitle');
+
+// Toggle buttons
+document.getElementById('showSignUp').addEventListener('click', () => {
+  signInForm.style.display = 'none';
+  signUpForm.style.display = 'block';
+  formTitle.textContent = "Admin Sign Up";
+});
+document.getElementById('showSignIn').addEventListener('click', () => {
+  signUpForm.style.display = 'none';
+  signInForm.style.display = 'block';
+  formTitle.textContent = "Admin Sign In";
+});
+
+// --- Sign In ---
+document.getElementById('signInBtn').addEventListener('click', async () => {
+  const email = document.getElementById('signInEmail').value.trim();
+  const password = document.getElementById('signInPassword').value.trim();
+  const errorEl = document.getElementById('signInError');
+  errorEl.textContent = "";
+
+  if(!email || !password){ errorEl.textContent = "All fields are required."; return; }
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){ errorEl.textContent = error.message; return; }
+
+  alert("Sign in successful! Redirecting to dashboard...");
+  window.location.href = "admin_dashboard.html"; // create this page
+});
+
+// --- Sign Up ---
+document.getElementById('signUpBtn').addEventListener('click', async () => {
+  const email = document.getElementById('signUpEmail').value.trim();
+  const password = document.getElementById('signUpPassword').value.trim();
+  const confirm = document.getElementById('signUpConfirm').value.trim();
+  const errorEl = document.getElementById('signUpError');
+  errorEl.textContent = "";
+
+  if(!email || !password || !confirm){ errorEl.textContent = "All fields are required."; return; }
+  if(password !== confirm){ errorEl.textContent = "Passwords do not match."; return; }
+
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if(error){ errorEl.textContent = error.message; return; }
+
+  alert("Sign up successful! Please check your email to confirm.");
+  // Automatically switch to sign in
+  signUpForm.style.display = 'none';
+  signInForm.style.display = 'block';
+  formTitle.textContent = "Admin Sign In";
+});
+</script>
+
+</body>
+</html>
