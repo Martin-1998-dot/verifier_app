@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Verifier Dashboard</title>
+<style>
+  body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif'; margin:0; background:#f4f7f8; }
+  h2,h3 { margin:0.5em 0; }
+  .topbar { display:flex; justify-content:space-between; align-items:center; background:#4a90e2; color:#fff; padding:10px 20px; }
+  .topbar button { background:#357ABD; border:none; padding:8px 12px; color:#fff; cursor:pointer; border-radius:5px; }
+  #sidebar { width:220px; background:#e1e8ed; position:fixed; top:0; left:-220px; height:100%; overflow-y:auto; transition:0.3s; padding-top:60px; box-shadow:2px 0 5px rgba(0,0,0,0.1);}
+  #sidebar.show { left:0; }
+  #sidebar a,#sidebar button { display:block; padding:12px 20px; text-decoration:none; color:#333; margin:5px 0; border-radius:5px;}
+  #sidebar a:hover,#sidebar button:hover { background:#d0e6f7;}
+  .main { margin-left:0; padding:20px; transition:margin-left 0.3s;}
+  .main.shifted { margin-left:220px;}
+  table { width:100%; border-collapse:collapse; margin-top:10px;}
+  th,td { padding:8px 10px; border:1px solid #ddd; text-align:left;}
+  th { background:#4a90e2; color:#fff;}
+  .approved { background:#d4edda; }
+  .rejected { background:#f8d7da; }
+  .pending { background:#d1ecf1; }
+  button.actionBtn { padding:4px 8px; margin-right:3px; border:none; border-radius:3px; cursor:pointer; color:#fff;}
+  button.approveBtn { background:#28a745; }
+  button.rejectBtn { background:#dc3545; }
+  button.deleteBtn { background:#ffc107; color:#333; }
+  .modal { display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4);}
+  .modal-content { background:#f4f7f8; margin:10% auto; padding:20px; border-radius:10px; width:500px; position:relative;}
+  .modal-content h2 { color:#4a90e2; text-align:center; }
+  .modal-content label { display:block; margin:8px 0 2px;}
+  .modal-content input, .modal-content select { width:100%; padding:6px 8px; margin-bottom:10px; border-radius:5px; border:1px solid #ccc;}
+  .modal-content button { width:100%; padding:8px; background:#4a90e2; color:#fff; border:none; border-radius:5px; cursor:pointer;}
+  .modal-content .close { position:absolute; right:15px; top:10px; font-size:20px; cursor:pointer; color:#333;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button id="menuBtn">☰ Menu</button>
+  <h2 id="dashboardTitle">Dashboard Overview</h2>
+</div>
+
+<div id="sidebar">
+  <a href="#" data-section="dashboard">Dashboard</a>
+  <a href="#" data-section="company">Company</a>
+  <a href="#" data-section="property">Property</a>
+  <a href="#" data-section="vehicle">Vehicle</a>
+  <a href="#" data-section="sample">DNA/Sample</a>
+  <a href="#" data-section="user">User</a>
+  <a href="#" data-section="profession">Profession</a>
+</div>
+
+<div class="main">
+  <h2 id="section-title">Dashboard Overview</h2>
+
+  <div id="dashboard-section" class="section">
+    <h3 style="text-align:center; font-size:1.5em;">Welcome to Verifier Admin Dashboard</h3>
+  </div>
+
+  <!-- Company Section -->
+  <div id="company-section" class="section" style="display:none;">
+    <button id="openCompanyModalBtn">Add Company</button>
+    <table id="companyTable">
+      <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Property Section -->
+  <div id="property-section" class="section" style="display:none;">
+    <button id="openPropertyModalBtn">Add Property</button>
+    <table id="propertyTable">
+      <thead><tr><th>ID</th><th>Name/Type</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Vehicle Section -->
+  <div id="vehicle-section" class="section" style="display:none;">
+    <button id="openVehicleModalBtn">Add Vehicle</button>
+    <table id="vehicleTable">
+      <thead><tr><th>ID</th><th>Type</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- DNA/Sample Section -->
+  <div id="sample-section" class="section" style="display:none;">
+    <button id="openSampleModalBtn">Add DNA/Sample</button>
+    <table id="sampleTable">
+      <thead><tr><th>ID</th><th>Person</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- User Section -->
+  <div id="user-section" class="section" style="display:none;">
+    <button id="openUserModalBtn">Add User</button>
+    <table id="userTable">
+      <thead><tr><th>ID</th><th>Name</th><th>Email/Phone</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Profession Section -->
+  <div id="profession-section" class="section" style="display:none;">
+    <button id="openProfessionModalBtn">Add Profession</button>
+    <table id="professionTable">
+      <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>
