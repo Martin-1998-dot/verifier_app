@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard Portal</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f6f8; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+  .auth-box { background:white; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:100%; max-width:380px; text-align:center; }
+  h2 { margin-bottom:20px; }
+  button { width:100%; padding:12px; margin-top:10px; border:none; border-radius:6px; cursor:pointer; font-size:16px; color:white; }
+  .google-btn { background:#db4437; }
+  .google-btn:hover { background:#c13527; }
+</style>
+</head>
+<body>
+
+<div class="auth-box">
+  <h2>Admin Dashboard Sign-In</h2>
+  <button id="googleAdminLogin" class="google-btn">Sign in with Google</button>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabaseUrl = 'https://nfixpojxelyrdxxqqvpb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5maXhwb2p4ZWx5cmR4eHFxdnBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MjI0ODYsImV4cCI6MjA3NDI5ODQ4Nn0.X6GmWOzL6NBtKKBejHjf6xQuEBeiA40EOEs4uQt7Vxw';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+document.getElementById('googleAdminLogin').addEventListener('click', async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin + '/auth-callback.html' }
+  });
+  if(error) alert("Error: " + error.message);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verifier App</title>
+    <script>
+        async function saveData(section) {
+            let fields = {};
+            document.querySelectorAll(`#${section} input`).forEach(input => {
+                fields[input.name] = input.value;
+            });
+
+            const response = await fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ section, fields })
+            });
+
+            const result = await response.json();
+            alert(result.status);
+        }
+    </script>
+</head>
+<body>
+    <h1>Verifier App</h1>
+
+    <h2>Vehicle</h2>
+    <div id="vehicle">
+        <input type="text" name="make_brand" placeholder="Make/Brand">
+        <input type="text" name="model" placeholder="Model">
+        <input type="text" name="reg_number" placeholder="Registration Number">
+        <input type="text" name="owner_full_name" placeholder="Owner Full Name">
+        <button onclick="saveData('vehicle')">Save Vehicle</button>
+    </div>
+
+    <h2>Profession</h2>
+    <div id="profession">
+        <input type="text" name="profession_name" placeholder="Profession Name">
+        <input type="text" name="practitioner_full_name" placeholder="Practitioner Name">
+        <input type="text" name="license_number" placeholder="License Number">
+        <input type="text" name="workplace" placeholder="Workplace">
+        <button onclick="saveData('profession')">Save Profession</button>
+    </div>
+
+    <h2>DNA Sample</h2>
+    <div id="dna_sample">
+        <input type="text" name="sample_id" placeholder="Sample ID">
+        <input type="text" name="sample_type" placeholder="Sample Type">
+        <input type="text" name="donor_full_name" placeholder="Donor Name">
+        <input type="text" name="donor_contact" placeholder="Donor Contact">
+        <input type="text" name="donor_email" placeholder="Donor Email">
+        <input type="text" name="collection_date" placeholder="Collection Date">
+        <input type="text" name="collected_by" placeholder="Collected By">
+        <input type="text" name="lab_code" placeholder="Lab Code">
+        <input type="text" name="storage_location" placeholder="Storage Location">
+        <input type="text" name="purpose" placeholder="Purpose">
+        <button onclick="saveData('dna_sample')">Save DNA Sample</button>
+    </div>
+</body>
+</html>

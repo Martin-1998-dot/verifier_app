@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verifier Dashboard</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    form { background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    h2 { color: #222; }
+    input, button { display: block; margin: 8px 0; padding: 10px; width: 100%; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #0066ff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0044cc; }
+  </style>
+</head>
+<body>
+  <h1>Verifier Dashboard</h1>
+
+  <form id="propertyForm">
+    <h2>Property</h2>
+    <input name="property_name" placeholder="Property Name / Title">
+    <input name="stand_number" placeholder="Stand / Plot Number">
+    <input name="owner_name" placeholder="Owner Full Name">
+    <input name="owner_contact" placeholder="Owner Contact">
+    <input name="owner_email" placeholder="Owner Email">
+    <button type="button" onclick="addRecord('property')">Submit</button>
+  </form>
+
+  <form id="companyForm">
+    <h2>Company</h2>
+    <input name="company_name" placeholder="Company Name">
+    <input name="registration_number" placeholder="Registration Number">
+    <input name="contact_person" placeholder="Contact Person">
+    <input name="email" placeholder="Email">
+    <input name="phone" placeholder="Phone">
+    <button type="button" onclick="addRecord('company')">Submit</button>
+  </form>
+
+  <form id="vehicleForm">
+    <h2>Vehicle</h2>
+    <input name="vehicle_make" placeholder="Make / Brand">
+    <input name="vehicle_model" placeholder="Model">
+    <input name="registration_number" placeholder="Registration Number">
+    <input name="owner_name" placeholder="Owner Name">
+    <input name="owner_email" placeholder="Owner Email">
+    <button type="button" onclick="addRecord('vehicle')">Submit</button>
+  </form>
+
+  <form id="professionForm">
+    <h2>Profession</h2>
+    <input name="profession_name" placeholder="Profession Name">
+    <input name="license_number" placeholder="License / Certification Number">
+    <input name="practitioner_name" placeholder="Practitioner Name">
+    <input name="contact_number" placeholder="Contact Number">
+    <input name="organization_name" placeholder="Organization Name">
+    <button type="button" onclick="addRecord('profession')">Submit</button>
+  </form>
+
+  <script>
+    async function addRecord(section) {
+      const form = document.getElementById(section + "Form");
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch(`/add_record?section=${section}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const msg = await res.json();
+      alert(msg.message || "Saved!");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verifier Search Portal</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+    .section { margin-bottom: 40px; border: 1px solid #ddd; padding: 20px; background: white; border-radius: 10px; }
+    h2 { color: #333; }
+    input, select, button { display: block; margin: 8px 0; padding: 10px; width: 100%; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #0066ff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0044cc; }
+  </style>
+</head>
+<body>
+  <h1>Verifier Search Portal</h1>
+
+  <div class="section">
+    <h2>Company</h2>
+    <input id="company_name" placeholder="Company Name">
+    <input id="reg_number" placeholder="Registration Number">
+    <input id="contact_person" placeholder="Contact Person">
+    <button onclick="search('company')">Search</button>
+  </div>
+
+  <div class="section">
+    <h2>Property</h2>
+    <input id="property_name" placeholder="Property Name / Title">
+    <input id="stand_number" placeholder="Stand / Plot Number">
+    <input id="owner_name" placeholder="Owner Full Name">
+    <button onclick="search('property')">Search</button>
+  </div>
+
+  <div class="section">
+    <h2>Vehicle</h2>
+    <input id="vehicle_make" placeholder="Vehicle Make / Brand">
+    <input id="vehicle_model" placeholder="Vehicle Model">
+    <input id="registration_number" placeholder="Registration Number">
+    <input id="vehicle_owner" placeholder="Owner Full Name">
+    <button onclick="search('vehicle')">Search</button>
+  </div>
+
+  <div class="section">
+    <h2>Profession</h2>
+    <input id="profession_name" placeholder="Profession Name / Title">
+    <input id="practitioner_name" placeholder="Practitioner Full Name">
+    <input id="license_number" placeholder="License / Certification Number">
+    <input id="organization_name" placeholder="Workplace / Organization Name">
+    <button onclick="search('profession')">Search</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+    async function search(section) {
+      const keyword = prompt("Enter keyword to search:");
+      if (!keyword) return;
+      const res = await fetch(`/search?section=${section}&keyword=${keyword}`);
+      const data = await res.json();
+      document.getElementById("results").innerHTML =
+        "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+    }
+  </script>
+</body>
+</html>
